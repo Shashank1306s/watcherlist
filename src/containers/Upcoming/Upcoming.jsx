@@ -19,7 +19,7 @@ const Upcoming = () => {
         } catch (error) {
             setError(true);
             setLoading(false);
-        }
+        } 
     };
     useEffect(() => {
         getMovieList();
