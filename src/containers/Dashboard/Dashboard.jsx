@@ -1,34 +1,24 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import './Dashboard.scss';
-
-const Dashboard = () => {
+import React from 'react'
+import { NavLink } from 'react-router-dom'
+import Cards from '../../components/card/Cards'
+function Dashboard() {
     return (
         <>
-            <div className="dashboard content" data-testid="main__dashboard">
-                <div className="dashboard-card-wrapper">
-                    <NavLink to = "/nowplaying">
-                        <i className = "fa fa-ticket" aria-hidden = "true" />
-                        <h1>Now Playing</h1>
-                    </NavLink>
-                </div>
+            <h1>Dashboard</h1>
 
-                <div className="dashboard-card-wrapper">
-                    <NavLink to = "/upcoming">
-                        <i className = "fa fa-video-camera" aria-hidden = "true" />
-                        <h1>Upcoming Movies</h1>
-                    </NavLink>
-                </div>
-
-                <div className="dashboard-card-wrapper">
-                    <NavLink to = "/genres">
-                        <i className = "fa fa-film" aria-hidden = "true" />
-                        <h1>Genres</h1>
-                    </NavLink>
-                </div>
+            <div className="container" >
+                <table className="table table-dark" className="table table-bordered">
+                    <tr>
+                        <th><NavLink to="/nowplaying"><Cards title="Now Playing"/></NavLink></th>
+                        <th><NavLink to="/upcoming"><Cards title="Upcoming"/></NavLink></th>
+                        <th><NavLink to="/search"><Cards title="Search"/></NavLink></th>
+                        <th><NavLink to="/genre"><Cards title="Genre"/></NavLink></th>
+                    </tr>
+                </table>
             </div>
+
         </>
-    );
+    )
 }
 
-export default Dashboard;
+export default Dashboard

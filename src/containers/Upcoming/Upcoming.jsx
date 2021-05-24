@@ -1,47 +1,50 @@
-import React, { useEffect, useState } from 'react';
-import Movie from '../Movie/Movie';
-import axios from 'axios';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import Cards from '../../components/card/Cards'
+import {fetchMovie} from '../../redux/action';
+class Upcoming extends Component {
 
-const BASE_MOVIE_PATH = 'https://api.themoviedb.org/3/movie/';
-const API_KEY = 'api_key=8c079aa9925b3fc45546af53c0d30371';
+    componentDidMount() {
+        this.props.fetchMovie();
+    }
 
-const Upcoming = () => {
-    const [movies, setMovies] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
+    render(props) {
+        const { loading, movieList, error } = this.props;
+        return loading ? (
+            <h1>Loading...</h1>
+        ) : error ? (
+            <h1>Error 404</h1>
+        ) : (
+            <div class="row">
+                <h1>Upcoming</h1>
+                <div>
+                    {
+                        movieList && movieList.map((movieName) =>
+                            <Cards
+                                title={movieName.title}
+                                overview={movieName.overview}
+                                poster={movieName.poster_path}
+                                released={movieName.release_date}
+                            />
+                        )
+                    }
+                </div>
+            </div>
+        )
+    }
+}
 
-    const getMovieList = async () => {
-        try {
-            const res = await axios.get(`${BASE_MOVIE_PATH}upcoming?${API_KEY}`);
-            console.log(res.data.results);
-            setMovies(res.data.results);
-            setLoading(false);
-        } catch (error) {
-            setError(true);
-            setLoading(false);
-        } 
-    };
-    useEffect(() => {
-        getMovieList();
-    }, []);
-    return (
-        <>
-        <h1>Upcoming Movies</h1>
-        {movies.map(movieName => {
-                return (
-                    <>
-                    {/* <Card > */}
-                        <Movie
-                            title={movieName.title}
-                            overview={movieName.overview}
-                            poster={movieName.poster_path}
-                            released={movieName.release_date}
-                        />
-                    {/* </Card> */}
-                    </>
-    );
-})}
-        </>
-    );
-};
-export default Upcoming;
+const mapStateToProps = (state) => {
+    return {
+        loading: state.loading,
+        movieList: state.movieList,
+        error: state.error
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchMovie: () => dispatch(fetchMovie('upcoming'))
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Upcoming)

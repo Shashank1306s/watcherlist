@@ -1,46 +1,50 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import Movie from '../Movie/Movie';
-// import Card from '../Card/Card';
-const BASE_MOVIE_PATH = 'https://api.themoviedb.org/3/movie/';
-const API_KEY = 'api_key=8c079aa9925b3fc45546af53c0d30371';
-const NowPlaying = () => {
-    const [movies, setMovies] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import Cards from '../../components/card/Cards'
+import {fetchMovie} from '../../redux/action';
+class NowPlaying extends Component {
 
-    const getMovieList = async () => {
-        try {
-            const res = await axios.get(`${BASE_MOVIE_PATH}now_playing?${API_KEY}`);
-            // console.log(res.data.results);
-            setMovies(res.data.results);
-            setLoading(false);
-        } catch (error) {
-            setError(true);
-            setLoading(false);
-        }
-    };
-    useEffect(() => {
-        getMovieList();
-    }, []);
-    return (
-        <>
-            <h1>Movies In Theatre Now</h1>
-            {movies.map(movieName => {
-                return (
-                    <>
-                    {/* <Card > */}
-                        <Movie
-                            title={movieName.title}
-                            overview={movieName.overview}
-                            poster={movieName.poster_path}
-                            released={movieName.release_date}
-                        />
-                    {/* </Card> */}
-                    </>
-    );
-})}
-        </>
-    );
+    componentDidMount() {
+        this.props.fetchMovie();
+    }
+
+    render(props) {
+        const { loading, movieList, error } = this.props;
+        return loading ? (
+            <h1>Loading...</h1>
+        ) : error ? (
+            <h1>Error 404</h1>
+        ) : (
+            <div class="row">
+                <h1>Now Playing</h1>
+                <div>
+                    {
+                        movieList && movieList.map((movieName) =>
+                            <Cards
+                                title={movieName.title}
+                                overview={movieName.overview}
+                                poster={movieName.poster_path}
+                                released={movieName.release_date}
+                            />
+                        )
+                    }
+                </div>
+            </div>
+        )
+    }
 }
-export default NowPlaying;
+
+const mapStateToProps = (state) => {
+    return {
+        loading: state.loading,
+        movieList: state.movieList,
+        error: state.error
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchMovie: () => dispatch(fetchMovie('now_playing'))
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(NowPlaying)
