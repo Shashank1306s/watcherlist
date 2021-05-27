@@ -36,9 +36,9 @@ class Upcoming extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        loading: state.loading,
-        movieList: state.movieList,
-        error: state.error
+        loading: state.LR.loading,
+        movieList: state.LR.movieList,
+        error: state.LR.error
     }
 }
 

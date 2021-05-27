@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
 import Cards from '../../components/card/Cards'
+import {connect} from "react-redux";
+import {searchMovie} from "../../redux/action";
+
 class Search extends Component {
     constructor(props) {
         super(props)
-
         this.state = {
-            value: '',
-            movies: [],
-            error: false,
-            loading: false,
+            value: ''
         }
     }
 
@@ -17,22 +16,13 @@ class Search extends Component {
         this.setState({ value: event.target.value });
     };
 
-    handleSubmit = async event => {
+    handleSubmit = event => {
         event.preventDefault();
-
-        this.setState({ loading: true });
-        const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${this.state.value}&api_key=8c079aa9925b3fc45546af53c0d30371`)
-            .then(response => response.json())
-            .then(response => {
-                console.log(response.results);
-                this.setState({ movies: response.results, loading: false });
-            }).catch(err => {
-                this.setState({ error: true, loading: false });
-            })
+        this.props.searchMovie(this.state.value)
     };
 
-    render() {
-        const { movies, error, loading } = this.state;
+    render(props) {
+        const { movies, error, loading } = this.props;
 
         let movieInfo = null;
 
@@ -59,7 +49,7 @@ class Search extends Component {
         if (error) {
             movieInfo = (
                 <h3>
-                    Woops, something went wrong trying to find movies with titles like
+                    Whoops, something went wrong trying to find movies with titles like
                     your search.
                 </h3>
             );
@@ -81,6 +71,18 @@ class Search extends Component {
         )
     }
 }
+const mapStateToProps = state =>{
+    return{
+        movies: state.SR.movies,
+        error:state.SR.error,
+        loading: state.SR.loading
+    }
+}
 
-export default Search
+const mapDispatchToProps = dispatch => {
+    return {
+        searchMovie:(value) => dispatch(searchMovie(value))
+    }
+}
+export default connect(mapStateToProps,mapDispatchToProps)(Search)
 

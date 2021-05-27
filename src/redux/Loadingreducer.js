@@ -6,7 +6,7 @@ const initialState = {
     error: false
 }
 
-const reducer = (state = initialState, action) => {
+const loadingreducer = (state = initialState, action) => {
     switch (action.type) {
         case MOVIE_LOADING_REQUEST:
             return {
@@ -34,4 +34,4 @@ const reducer = (state = initialState, action) => {
     }
 }
 
-export default reducer
+export default loadingreducer
